@@ -12,8 +12,7 @@ on:
 permissions:
   contents: read
   packages: write
-  # TODO (Trilha 3 - Aula 05): Descomente a linha abaixo para habilitar assinatura Keyless OIDC
-  # id-token: write
+  id-token: write
 
 jobs:
   secure-build-and-sign:
@@ -29,10 +28,8 @@ jobs:
           LOWER_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           echo "IMAGE_REPO=ghcr.io/${LOWER_REPO}/payment-api" >> "$GITHUB_ENV"
 
-      # TODO (Trilha 3 - Aula 05): Substitua a tag mutavel '@v4' pelo SHA-1 imutavel da v4.0.2:
-      # @60edb5dd545a775178f52524783378180af0d1f8
       - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version: 18
 

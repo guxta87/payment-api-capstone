@@ -15,21 +15,20 @@ deny contains msg if {
 	msg := sprintf("VIOLACAO OPENVEX: @context invalido ('%v'). Esperado: 'https://openvex.dev/ns/v0.2.0'.", [ctx])
 }
 
-# Regra 2 (TODO - Complete abaixo): Bloquear caso o array 'statements' esteja ausente ou vazio (count == 0).
-# Dica: stmts := object.get(input, "statements", [])
-#       count(stmts) == 0
-# deny contains msg if {
-# 	...
-# 	msg := "VIOLACAO OPENVEX: O documento OpenVEX deve conter pelo menos 1 statement de triagem."
-# }
+# Regra 2: Bloquear caso o array 'statements' esteja ausente ou vazio.
+deny contains msg if {
+	stmts := object.get(input, "statements", [])
+	count(stmts) == 0
+	msg := "VIOLACAO OPENVEX: O documento OpenVEX deve conter pelo menos 1 statement de triagem."
+}
 
-# Regra 3 (TODO - Complete abaixo): Exigir que todo statement com status == "not_affected"
-# possua o campo 'justification' preenchido, nao vazio e sem marcador 'TODO'.
-# Dica: some stmt in object.get(input, "statements", [])
-#       stmt.status == "not_affected"
-#       just := object.get(stmt, "justification", "")
-#       just == "" (ou startswith(just, "TODO"))
-# deny contains msg if {
-# 	...
-# 	msg := sprintf("VIOLACAO OPENVEX: Statement para '%v' marcado como 'not_affected' sem justificativa oficial valida.", [object.get(object.get(stmt, "vulnerability", {}), "name", "desconhecida")])
-# }
+# Regra 3: Exigir justificativa preenchida para todo statement 'not_affected'.
+deny contains msg if {
+	some stmt in object.get(input, "statements", [])
+	stmt.status == "not_affected"
+	just := object.get(stmt, "justification", "")
+	regex.match("^($|TODO)", just)
+	vulnerability := object.get(stmt, "vulnerability", {})
+	name := object.get(vulnerability, "name", "desconhecida")
+	msg := sprintf("VIOLACAO OPENVEX: Statement para '%v' marcado como 'not_affected' sem justificativa oficial valida.", [name])
+}

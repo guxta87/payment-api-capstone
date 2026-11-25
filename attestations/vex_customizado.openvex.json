@@ -45,8 +45,8 @@
         }
       ],
       "status": "not_affected",
-      "justification": "TODO_SUBSTITUA_POR_JUSTIFICATIVA_OFICIAL_OPENVEX",
-      "impact_statement": "TODO: Substitua este texto explicando tecnicamente por que a payment-api nao e afetada por esta CVE (ex.: o microsservico expoe apenas endpoints REST JSON e nao utiliza res.redirect com parametros do usuario)."
+      "justification": "vulnerable_code_not_in_execute_path",
+      "impact_statement": "As rotas retornam JSON e por isso, as requisições não chegam à função de redirecionamento afetada."
     }
   ]
 }
